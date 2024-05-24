@@ -9,3 +9,5 @@ print(my_list)
 my_dict = {'cat': 'кошка', 'dog': 'собака'}
 print(my_dict)
 print(my_dict.setdefault('cat'))
+my_dict['fish'] = 'рыба'
+print(my_dict)
