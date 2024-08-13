@@ -1,19 +1,19 @@
 def calculate_structure_sum(data_structure):
     total_sum = 0
-    for element in data_structure:
-        if isinstance(element, list):
-            total_sum += calculate_structure_sum(element)
-        elif isinstance(element, tuple):
-            total_sum += calculate_structure_sum(element)
-        elif isinstance(element, dict):
-            for key, value in element.items():
-                total_sum += calculate_structure_sum([key, value])
-        elif isinstance(element, str):
-            total_sum += len(element)
-        elif isinstance(element, int):
-            total_sum += element
-        elif isinstance(element, float):
-            total_sum += element
+    if isinstance(data_structure, (int, float)):
+            return data_structure
+    elif isinstance(data_structure, str):
+        return len(data_structure)
+    elif isinstance(data_structure, (list, tuple, set)):
+        for item in data_structure:
+            total_sum += calculate_structure_sum(item)
+    elif isinstance(data_structure, dict):
+            for key, value in data_structure.items():
+                total_sum += calculate_structure_sum(key)
+                total_sum += calculate_structure_sum(value)
+    elif isinstance(data_structure, tuple):
+        for item in data_structure:
+            total_sum += calculate_structure_sum(item)
     return total_sum
 
 data_structure = [
@@ -23,6 +23,5 @@ data_structure = [
     "Hello",
     ((), [{(2, 'Urban', ('Urban2', 35))}])
 ]
-
 result = calculate_structure_sum(data_structure)
 print(result)
