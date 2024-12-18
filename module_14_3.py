@@ -7,11 +7,12 @@ api = '7488208272:AAEvlECQqxi1O8eExlOFjKhHvGLiRNJHuF4'
 bot = Bot(token=api)
 dp = Dispatcher(bot, storage=MemoryStorage())
 
-# Создаем обычную клавиатуру с кнопкой "Купить"
+# Создаем обычную клавиатуру с кнопками
 main_kb = types.ReplyKeyboardMarkup(resize_keyboard=True)
 btn_calculate = types.KeyboardButton('Рассчитать')
+btn_info = types.KeyboardButton('Информация')
 btn_buy = types.KeyboardButton('Купить')
-main_kb.add(btn_calculate, btn_buy)
+main_kb.add(btn_calculate, btn_info, btn_buy)
 
 # Создаем Inline клавиатуру для продуктов
 products_kb = types.InlineKeyboardMarkup(row_width=2)
@@ -107,6 +108,13 @@ async def get_buying_list(message):
 async def send_confirm_message(call):
     await call.message.answer("Вы успешно приобрели продукт!")
     await call.answer()
+
+
+@dp.message_handler(lambda message: message.text == 'Информация')
+async def show_info(message):
+    await message.answer('Это бот для расчета нормы калорий и покупки продуктов. '
+                        'Используйте кнопку "Рассчитать" для подсчета нормы калорий '
+                        'или кнопку "Купить" для просмотра доступных продуктов.')
 
 
 @dp.message_handler()
