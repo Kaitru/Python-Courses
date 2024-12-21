@@ -17,24 +17,27 @@ async def get_all_users() -> list:
 
 @app.post("/user/{username}/{age}")
 async def add_user(username: Annotated[str, Path(min_length=3, max_length=15, description="Enter Username", example="John")],
-                   age: Annotated[int, Path(ge=1, le=100, description="Enter Age", example=25)]) -> str:
-    users.append(User(id=len(users) + 1, username=username, age=age))
-    return f"User {len(users)} is registered"
+                   age: Annotated[int, Path(ge=1, le=100, description="Enter Age", example=25)]) -> User:
+    new_id = users[-1].id + 1 if users else 1
+    new_user = User(id=new_id, username=username, age=age)
+    users.append(new_user)
+    return new_user
 
 @app.put("/user/{user_id}/{username}/{age}")
 async def update_user(user_id: str,
                       username: Annotated[str, Path(min_length=3, max_length=15, description="Enter Username", example="John")],
-                      age: Annotated[int, Path(ge=1, le=100, description="Enter Age", example=25)]) -> str:
+                      age: Annotated[int, Path(ge=1, le=100, description="Enter Age", example=25)]) -> User:
     try:
-        users[int(user_id) - 1] = User(id=int(user_id), username=username, age=age)
-        return f"User {user_id} is updated"
+        updated_user = User(id=int(user_id), username=username, age=age)
+        users[int(user_id) - 1] = updated_user
+        return updated_user
     except IndexError:
         raise HTTPException(status_code=404, detail="User was not found")
 
 @app.delete("/user/{user_id}")
-async def delete_user(user_id: str) -> str:
+async def delete_user(user_id: str) -> User:
     for user in users:
         if user.id == int(user_id):
             users.remove(user)
-            return f"User {user_id} is deleted"
+            return user
     raise HTTPException(status_code=404, detail="User was not found")
